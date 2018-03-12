@@ -19,7 +19,7 @@ export class CustomEventTitleFormatter extends CalendarEventTitleFormatter {
 
   week(event: CalendarEvent): string {
     return `<b>${new DatePipe(this.locale).transform(
-      `new Date(event.end)`,
+      event.end,
       'h:m a',
       this.locale
     )}</b> ${event.title} Paciente: ${event.patient.nome} - Médico:  ${event.doctor.nome}`;
@@ -27,7 +27,7 @@ export class CustomEventTitleFormatter extends CalendarEventTitleFormatter {
 
   day(event: CalendarEvent): string {
     return `<b>${new DatePipe(this.locale).transform(
-      `new Date(event.start)`,
+      event.start,
       'h:m a',
       this.locale
     )}</b> ${event.title} Paciente: ${event.patient.nome} - Médico:  ${event.doctor.nome}`;

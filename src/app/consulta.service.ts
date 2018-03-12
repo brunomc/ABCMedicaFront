@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Http,HttpModule} from '@angular/http';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule,HttpHeaders} from '@angular/common/http';
 import 'rxjs/add/operator/map'
 import { CalendarEvent } from 'angular-calendar';
 
 
-
+const headers = new HttpHeaders({
+    'Content-Type':'application/json; charset=utf-8'
+});
 @Injectable()
 export class ConsultaService {
 
