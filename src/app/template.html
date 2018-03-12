@@ -1,0 +1,186 @@
+<ng-template #modalContent let-close="close">
+    <div class="modal-header">
+      <h5 class="modal-title">Event action occurred</h5>
+      <button type="button" class="close" (click)="close()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div>
+        Action:
+        <pre>{{ modalData?.action }}</pre>
+      </div>
+      <div>
+        Event:
+        <pre>{{ modalData?.event | json }}</pre>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-secondary" (click)="close()">OK</button>
+    </div>
+  </ng-template>
+  
+  <div class="row text-center">
+    <div class="col-md-4">
+      <div class="btn-group">
+        <div
+          class="btn btn-primary"
+          mwlCalendarPreviousView
+          [view]="view"
+          [(viewDate)]="viewDate"
+          (viewDateChange)="activeDayIsOpen = false">
+          Antes
+        </div>
+        <div
+          class="btn btn-outline-secondary"
+          mwlCalendarToday
+          [(viewDate)]="viewDate">
+          Hoje
+        </div>
+        <div
+          class="btn btn-primary"
+          mwlCalendarNextView
+          [view]="view"
+          [(viewDate)]="viewDate"
+          (viewDateChange)="activeDayIsOpen = false">
+          Depois
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):'pt-BR' }}</h3>
+    </div>
+    <div class="col-md-4">
+      <div class="btn-group">
+        <div
+          class="btn btn-primary"
+          (click)="view = 'month'"
+          [class.active]="view === 'month'">
+          Mês
+        </div>
+        <div
+          class="btn btn-primary"
+          (click)="view = 'week'"
+          [class.active]="view === 'week'">
+          Semana
+        </div>
+        <div
+          class="btn btn-primary"
+          (click)="view = 'day'"
+          [class.active]="view === 'day'">
+          Diário
+        </div>
+      </div>
+    </div>
+  </div>
+  <br>
+  <div [ngSwitch]="view">
+    <mwl-calendar-month-view
+      *ngSwitchCase="'month'"
+      [viewDate]="viewDate"
+      [events]="events"
+      [locale]="'pt-BR'"
+      [refresh]="refresh"
+      [activeDayIsOpen]="activeDayIsOpen"
+      (dayClicked)="dayClicked($event.day)"
+      (eventClicked)="handleEvent('Clicked', $event.event)"
+      (eventTimesChanged)="eventTimesChanged($event)">
+    </mwl-calendar-month-view>
+    <mwl-calendar-week-view
+      *ngSwitchCase="'week'"
+      [viewDate]="viewDate"
+      [events]="events"
+      [locale]="'pt-BR'"
+      [refresh]="refresh"
+      (eventClicked)="handleEvent('Clicked', $event.event)"
+      (eventTimesChanged)="eventTimesChanged($event)">
+    </mwl-calendar-week-view>
+    <mwl-calendar-day-view
+      *ngSwitchCase="'day'"
+      [viewDate]="viewDate"
+      [events]="events"
+      [locale]="'pt-BR'"
+      [refresh]="refresh"
+      (eventClicked)="handleEvent('Clicked', $event.event)"
+      (eventTimesChanged)="eventTimesChanged($event)">
+    </mwl-calendar-day-view>
+  </div>
+  
+  <br><br><br>
+  
+  <h3>
+    Editar Consultas
+    <button
+      class="btn btn-primary pull-right"
+      (click)="addEvent()">
+      Incluir nova
+    </button>
+    <div class="clearfix"></div>
+  </h3>
+  
+  <table class="table table-bordered">
+  
+    <thead>
+      <tr>
+        <th>Título</th>
+        <th>Paciente</th>
+        <th>Médico</th>
+        <th>Hora de Início</th>
+        <th>Finaliza em</th>
+        <th>Remover</th>
+      </tr>
+    </thead>
+  
+    <tbody>
+      <tr *ngFor="let event of events; let index = index">
+          <td>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="event.title"
+                (keyup)="refresh.next()">
+            </td>
+        <td>
+          <select  class="form-control"
+            [(ngModel)]="event.patient.id" (ngModelChange)="refresh.next()">
+            <option  *ngFor="let patient of patients" [value]="patient.id">{{patient.nome}}</option>
+          </select>
+            
+        </td>
+        <td>
+          <select  class="form-control"
+            [(ngModel)]="event.doctor.id" (ngModelChange)="refresh.next()">
+            <option  *ngFor="let doctor of doctors" [value]="doctor.id">{{doctor.nome}}</option>
+          </select>
+        </td>
+       
+       <td>
+          <mwl-agenda-utils-date-time-picker
+            [(ngModel)]="event.start"
+            (ngModelChange)="refresh.next()"
+            placeholder="Não definido">
+          </mwl-agenda-utils-date-time-picker>
+        </td>
+        <td>
+          <mwl-agenda-utils-date-time-picker
+            [(ngModel)]="event.end"
+            (ngModelChange)="refresh.next()"
+            placeholder="Não definido">
+          </mwl-agenda-utils-date-time-picker>
+        </td>
+        <td>
+          <button
+            class="btn btn-danger"
+            (click)="events.splice(index, 1);deletar(event); refresh.next()">
+            Apagar
+          </button>
+          <button
+            class="btn btn-primary"
+            (click)="salvar(event); refresh.next()">
+            Salvar
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  
+  </table>
