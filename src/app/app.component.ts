@@ -196,12 +196,7 @@ deletar(event: CalendarEvent){
       end: endOfDay(new Date()),
       patient:{},
       doctor:{},
-      color:"red",
-      draggable: true,
-      resizable: {
-        beforeStart: true,
-        afterEnd: true
-      }
+      color:"red"
     });
     this.refresh.next();
   }

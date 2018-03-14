@@ -41,7 +41,9 @@ save(calendarEvent:CalendarEvent){
 }
  deletar(calendarEvent:CalendarEvent){
      
-   return this.http.delete(`http://localhost:8080/abcMedicaApi/rest/consulta/${calendarEvent.id}`)
+   return this.http.delete(`http://localhost:8080/abcMedicaApi/rest/consulta/`, {
+       body: calendarEvent
+   })
     .map(response =>response.json())
     .toPromise()
 }
